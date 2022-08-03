@@ -15,6 +15,9 @@ jobs:
         with:
           java-version: '11'
           distribution: 'adopt'
+      - uses: s4u/maven-settings-action@v2.6.0
+        with:
+          servers: '[{"id": "github-packages", "username": "dexterzep", "password": "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"}]'    
       - name: Publish package
         run: mvn deploy
         env:
