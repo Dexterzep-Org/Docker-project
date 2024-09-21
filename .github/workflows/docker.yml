@@ -35,7 +35,4 @@ jobs:
 #    needs: Third-job
     steps:
         - name: Deploy .jar file
-          run: ssh root@192.168.1.9 /data/java -jar $var1
-
-
-  
+          run: ssh root@192.168.1.9 "nohup java -jar /data/$var1 > /dev/null 2>&1 &"
