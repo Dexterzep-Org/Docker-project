@@ -6,33 +6,33 @@ on:
 env:
   var1: docker-demo.jar 
 jobs:
-#  my_first_job:
-#    runs-on: self-hosted
-#    steps:
-#      - name: Checkout code
-#        uses: actions/checkout@v3
-#      - name: pwd
-#        run: |
-#          pwd
-#
-#  second-job:
-#    runs-on: self-hosted
-#    needs: my_first_job
-#    steps:
-#      - name: Build the code
-#        run: |
-#         mvn clean install -DskipTests
-#         
-#  Third-job:
-#    runs-on: self-hosted
-#    needs: second-job
-#    steps:
-#        - name: copy .warfile to target 
-#          run: scp ./target/docker-demo.jar root@192.168.1.9:/data
-#          
+  my_first_job:
+    runs-on: self-hosted
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: pwd
+        run: |
+          pwd
+
+  second-job:
+    runs-on: self-hosted
+    needs: my_first_job
+    steps:
+      - name: Build the code
+        run: |
+         mvn clean install -DskipTests
+         
+  Third-job:
+    runs-on: self-hosted
+    needs: second-job
+    steps:
+        - name: copy .jar file to target 
+          run: scp ./target/var1 root@192.168.1.9:/data
+          
   Fourth-Job:
     runs-on: self-hosted
-#    needs: Third-job
+    needs: Third-job
     steps:
         - name: Deploy .jar file
           run: ssh root@192.168.1.9 "nohup java -jar /data/$var1 > /dev/null 2>&1 &"
