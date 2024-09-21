@@ -4,33 +4,33 @@ on:
     branches:
       - DEV
 jobs:
-  my_first_job:
-    runs-on: self-hosted
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-      - name: pwd
-        run: |
-          pwd
-
-  second-job:
-    runs-on: self-hosted
-    needs: my_first_job
-    steps:
-      - name: Build the code
-        run: |
-         mvn clean install -DskipTests
-         
-  Third-job:
-    runs-on: self-hosted
-    needs: second-job
-    steps:
-        - name: copy .warfile to target 
-          run: scp ./target/docker-demo.jar root@192.168.1.9:/data
-          
+#  my_first_job:
+#    runs-on: self-hosted
+#    steps:
+#      - name: Checkout code
+#        uses: actions/checkout@v3
+#      - name: pwd
+#        run: |
+#          pwd
+#
+#  second-job:
+#    runs-on: self-hosted
+#    needs: my_first_job
+#    steps:
+#      - name: Build the code
+#        run: |
+#         mvn clean install -DskipTests
+#         
+#  Third-job:
+#    runs-on: self-hosted
+#    needs: second-job
+#    steps:
+#        - name: copy .warfile to target 
+#          run: scp ./target/docker-demo.jar root@192.168.1.9:/data
+#          
   Fourth-Job:
     runs-on: self-hosted
-    needs: Third-job
+#    needs: Third-job
     steps:
         - name: Deploy .jar file
-          run: ssh@192.168.1.9 java -jar /data/docker-demo.jar &
+          run: ssh@192.168.1.9 "nohup java -jar /data/docker-demo.jar > /dev/null 2>&1 &"
