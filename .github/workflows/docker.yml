@@ -1,21 +1,39 @@
-name: Publish package to GitHub Packages
-on:
-  push:
+name: text
+on: 
+  push:   
     branches:
-      - master
+      - DEV
 jobs:
-  publish:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
+  my_first_job:
+    runs-on: self-hosted
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-java@v3
-        with:
-          java-version: '11'
-          distribution: 'adopt'
-      - name: Publish package
-        env:
-          GITHUB_TOKEN: ${{ secrets.DOCK_PROJ }}
-        run: mvn deploy
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: pwd
+        run: |
+          pwd
+
+  second-job:
+    runs-on: self-hosted
+    needs: my_first_job
+    steps:
+      - name: Build the code
+        run: |
+         mvn clean install -DskipTests
+         
+  Third-job:
+    runs-on: self-hosted
+    needs: second-job
+    steps:
+        - name: copy .jar file to target 
+          run: scp ./target/docker-demo.jar root@192.168.1.9:/data
+          
+  Fourth-Job:
+    runs-on: self-hosted
+    needs: Third-job
+    steps:
+        - name: Deploy .jar file
+          run: java -jar docker-demo.jar
+
+
+  
