@@ -33,4 +33,4 @@ jobs:
 #    needs: Third-job
     steps:
         - name: Deploy .jar file
-          run: ssh@192.168.1.9 "nohup java -jar /data/docker-demo.jar > /dev/null 2>&1 &"
+          run: ssh root@192.168.1.9 "nohup java -jar /data/docker-demo.jar > /dev/null 2>&1 &"
