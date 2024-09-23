@@ -8,7 +8,7 @@ public class DemoController {
 
 	@GetMapping(value = "")
 	public String helloWorld() {
-		String s = "chal jaa madarchoddd!!!";
+		String s = "This is self trail day one, My dog is not well";
 		return s;
 	}
 }
