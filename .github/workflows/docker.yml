@@ -1,38 +1,36 @@
-name: text
+name: my_pipeline
 on: 
-  push:   
-    branches:
-      - DEV
-env:
-  var1: docker-demo.jar 
-jobs:
-  my_first_job:
-    runs-on: self-hosted
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-      - name: pwd
-        run: |
-          pwd
+  push:
+    branches: 
+      - DEV 
 
-  second-job:
+jobs:
+  My_First_Job:
     runs-on: self-hosted
-    needs: my_first_job
     steps:
-      - name: Build the code
+      - name: checkout code
+        uses: actions/checkout@v3
+
+  Second_Job:
+    runs-on: self-hosted
+    needs: My_First_Job
+    steps:
+      - name: build the code
         run: |
-         mvn clean install -DskipTests
-         
-  Third-job:
+          mvn clean install -DskipTests
+
+  Third_Job:
     runs-on: self-hosted
-    needs: second-job
+    needs: Second_Job
     steps:
-        - name: copy .jar file to target 
-          run: scp ./target/$var1 root@192.168.1.9:/data
-          
-  Fourth-Job:
+      - name: move the .jar file to the target server
+        run: |
+          scp target/docker-demo.jar root@192.168.0.105:/data
+
+  Fourth_Job:
     runs-on: self-hosted
-    needs: Third-job
+    needs: Third_Job
     steps:
-        - name: Deploy .jar file
-          run: ssh root@192.168.1.9 "nohup java -jar /data/$var1 > /dev/null 2>&1 &"
+      - name: Deploy .JAR file
+        run: |
+          ssh root@192.168.1.9 "nohup java -jar /data/docker-demo.jar > /dev/null 2>&1 &"
