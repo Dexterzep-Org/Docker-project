@@ -16,7 +16,7 @@ jobs:
        needs: My_First_Job
        steps:
        - name: List directory contents
-         run: ll
+         run: ls -l
        - name: build the code
          run: |
             mvn clean install -DskipTests
