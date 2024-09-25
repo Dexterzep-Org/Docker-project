@@ -16,7 +16,7 @@ jobs:
        needs: My_First_Job
        steps:
        - name: cd to target folder
-         run: cd target
+         run: cd ./target
        - name: build the code
          run: |
             mvn clean install -DskipTests
