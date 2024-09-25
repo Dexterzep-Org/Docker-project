@@ -24,4 +24,4 @@ jobs:
            chmod 600 ~/.ssh/ec2-key.pem
        - name: scp to ec2
          run: |
-            scp -i ~/.ssh/ec2-key.pem target/*.jar ec2-user@ec2-34-234-84-139.compute-1.amazonaws.com:/home/ec2-user/data/jar/
+            scp -o StrictHostKeyChecking=no -i ~/.ssh/ec2-key.pem target/*.jar ec2-user@ec2-34-234-84-139.compute-1.amazonaws.com:/home/ec2-user/data/jar/
