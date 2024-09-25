@@ -16,7 +16,7 @@ jobs:
        needs: My_First_Job
        steps:
        - name: List directory contents
-         run: ls -l
+         run: cd /home/runner/work/Docker-project
        - name: build the code
          run: |
             mvn clean install -DskipTests
