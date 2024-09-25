@@ -17,4 +17,10 @@ jobs:
            cache: maven
        - name: run maven
          run: mvn clean install -DskipTests
-       - run: ls -lrt target/*
+       - name: setup ssh keys
+         run: |
+           echo $PRIVATE_KEY > ~/.ssh/ec2-key.pem
+           chmod 600 > ~/.ssh/ec2-key.pem
+       - name: scp to ec2
+         run: |
+            scp -i ~/.ssh/ec2-key.pem target/*.jar ec2-user@ec2-34-234-84-139.compute-1.amazonaws.com:/home/ec2-user/data/jar/
