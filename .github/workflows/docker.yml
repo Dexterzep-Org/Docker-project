@@ -20,8 +20,9 @@ jobs:
        - name: setup ssh keys
          run: |
            mkdir ~/.ssh/
+           chmod -R 755 ~/.ssh/
            echo $EC2_PEM_KEY > ~/.ssh/ec2-key.pem
-           chmod 400 ~/.ssh/ec2-key.pem
+           chmod 600 ~/.ssh/ec2-key.pem
            cat ~/.ssh/ec2-key.pem
          env:
           EC2_PEM_KEY: ${{ secrets.PRIVATE_KEY }}
