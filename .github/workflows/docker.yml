@@ -20,8 +20,14 @@ jobs:
        - name: setup ssh keys
          run: |
            mkdir ~/.ssh/
-           echo ${{ secrets.PRIVATE_KEY }} > ~/.ssh/ec2-key.pem
-           chmod 600 ~/.ssh/ec2-key.pem
+           echo $EC2_PEM_KEY > ~/.ssh/ec2-key.pem
+           chmod 400 ~/.ssh/ec2-key.pem
+         env:
+          EC2_PEM_KEY: ${{ secrets.PRIVATE_KEY }}
+       - name: Start SSH Agent
+         run: |
+          eval $(ssh-agent -s)
+          ssh-add ~/.ssh/ec2-key.pem
        - name: scp to ec2
          run: |
             scp -o StrictHostKeyChecking=no -i ~/.ssh/ec2-key.pem target/*.jar ec2-user@ec2-34-234-84-139.compute-1.amazonaws.com:/home/ec2-user/data/jar/
