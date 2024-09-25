@@ -17,3 +17,4 @@ jobs:
            cache: maven
        - name: run maven
          run: mvn clean install -DskipTests
+       - run: ls -lrt target/*
