@@ -16,8 +16,7 @@ jobs:
        needs: My_First_Job
        steps:
        - name: cd to code
-         run: cd Docker-project/pom.xml
-
+         run: cd /home/runner/work/Docker-project/Docker-project
        - name: build the code
          run: |
             mvn clean install -DskipTests
