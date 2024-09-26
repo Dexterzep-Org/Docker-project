@@ -17,15 +17,6 @@ jobs:
            cache: maven
        - name: run maven
          run: mvn clean install -DskipTests
-       - name: Copy to Remote Server
-         uses: pierrickdelrieu/scp-action@v0.1.0
-         with:
-           host: ec2-34-234-84-139.compute-1.amazonaws.com
-           ssh_port: 22
-           ssh_username: ec2-user
-           ssh_key: ${{ secrets.PRIVATE_KEY }}
-           source_dir: target/*.jar
-           destination_dir: /home/ec2-user/data/jar/
        - name: setup ssh keys
          run: |
            mkdir ~/.ssh/
