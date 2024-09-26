@@ -1,5 +1,0 @@
-with:
-  ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-
-run: |
-  ssh ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}
