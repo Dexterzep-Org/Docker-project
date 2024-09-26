@@ -22,7 +22,7 @@ jobs:
        - name: setup ssh keys
          run: |
            mkdir ~/.ssh/
-           ${{ env.EC2_PEM_KEY }} > ~/.ssh/ec2-key.pem
+           echo "${{ env.EC2_PEM_KEY }}" >> ~/.ssh/ec2-key.pem
            chmod 600 ~/.ssh/ec2-key.pem
        - name: scp to ec2
          run: |
