@@ -22,9 +22,10 @@ jobs:
        - name: setup ssh keys
          run: |
            mkdir ~/.ssh/
+           chmod 700 ~/.ssh
            echo "${{ env.EC2_PEM_KEY }}" >> ~/.ssh/ec2-key.pem
-           chmod 400 ~/.ssh/ec2-key.pem
-           ssh-keygen -p -m PEM -f ~/.ssh/ec2-key.pem
+           chmod 600 ~/.ssh/ec2-key.pem
+           
        - name: scp to ec2
          run: |
             scp -o StrictHostKeyChecking=no -i ~/.ssh/ec2-key.pem target/*.jar ec2-user@ec2-3-94-123-21.compute-1.amazonaws.com:/home/ec2-user/data/jar/
