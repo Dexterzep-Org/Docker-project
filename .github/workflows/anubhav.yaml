@@ -24,15 +24,13 @@ jobs:
     runs-on: ubuntu-latest
     needs: Second_Job
     steps:
-      - name: Add SSH Key
-        uses: webfactory/ssh-agent@v0.5.3
+      - name: Deploy to EC2 via SSH
+        uses: appleboy/ssh-action@master
         with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-
-      - name: Deploy to EC2
-        run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
             cd /path/to/your/app
             git pull origin DEV
             ./deploy.sh   # Or any other deployment command
-          EOF
