@@ -16,14 +16,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: My_First_Job
     steps:
-      - name: build the code
-        run: |
-          mvn clean install -DskipTests
-
-  Deploy_to_EC2:
-    runs-on: ubuntu-latest
-    needs: Second_Job
-    steps:
       - name: Install AWS CLI
         run: |
           sudo apt-get update
@@ -35,13 +27,14 @@ jobs:
           aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws configure set region ${{ secrets.AWS_REGION }}
 
-      - name: Set up SSH and Deploy
+      - name: Download Project from S3
         run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
-            cd /path/to/your/app
-            git pull origin DEV
-            ./deploy.sh   # Or any other deployment command
-          EOF
+          aws s3 cp s3://your-bucket-name/path/to/project/ ./Docker-project --recursive
+
+      - name: Print directory structure
+        run: ls -R  # Confirm the files have been downloaded correctly
+
+      - name: build the code
+        run: |
+          cd Docker-project
+          mvn clean install -DskipTests
