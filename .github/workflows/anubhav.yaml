@@ -26,10 +26,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
 
-  Second_Job:
-    runs-on: ubuntu-latest
-    needs: My_First_Job
-    steps:
       - name: build the code
         run: |
           cd Docker-project
