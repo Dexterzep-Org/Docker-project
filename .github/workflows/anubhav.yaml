@@ -28,5 +28,5 @@ jobs:
 
       - name: build the code
         run: |
-          cd Docker-project
           mvn clean install -DskipTests
+          ls -rlt .
