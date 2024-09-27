@@ -9,7 +9,7 @@ jobs:
   My_First_Job:
     runs-on: ubuntu-latest
     steps:
-      - name: checkout code
+      - name: Checkout code
         uses: actions/checkout@v3
       
       - name: Set up JDK 11  # Choose a JDK version compatible with your project.
@@ -18,19 +18,21 @@ jobs:
           distribution: 'temurin'  # You can use other JDK distributions like 'zulu'.
           java-version: '11'  # Specify the JDK version.
 
-      #- name: Cache Maven packages
-        # uses: actions/cache@v3
-        #with:
-         # path: ~/.m2/repository
-         # key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-         # restore-keys: |
-           # ${{ runner.os }}-maven-
+      # - name: Cache Maven packages
+      #   uses: actions/cache@v3
+      #   with:
+      #     path: ~/.m2/repository
+      #     key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+      #     restore-keys: |
+      #       ${{ runner.os }}-maven-
 
-      - name: build the code
+      - name: Build the code
         run: |
           mvn clean install -DskipTests
           ls -rlt .
 
-      - name: copy JAR to s3 bucket
+      - name: Configure AWS Credentials
         run: |
-          cp target/docker-demo-0.0.1-SNAPSHOT.jar s3://anubhav-github-actionv3/demo-folder/
+          aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws configure set region ${{ secrets.AWS_REGION }}
