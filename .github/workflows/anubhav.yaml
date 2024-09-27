@@ -37,11 +37,6 @@ jobs:
         run: |
           echo "${{ secrets.EC2_SSH_KEY }}" > EC2Tutorial.pem
           chmod 600 EC2Tutorial.pem
-          ssh -o StrictHostKeyChecking=no -i EC2Tutorial.pem ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
-            # Download the JAR file from S3
-            aws s3 cp s3://anubhav-github-actionv3/demo-folder/docker-demo.jar /mycode/
-          EOF
+          ssh -o StrictHostKeyChecking=no -i EC2Tutorial.pem ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} aws s3 cp s3://anubhav-github-actionv3/demo-folder/docker-demo.jar /mycode/
      
-      - name: move jar to ec2 instance
-        run: |
-          aws s3 cp s3://anubhav-github-actionv3/demo-folder/docker-demo.jar /mycode
+     
