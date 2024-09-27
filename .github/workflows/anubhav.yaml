@@ -12,24 +12,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
       
-      - name: Set up JDK 11  # Choose a JDK version compatible with your project.
+      - name: Set up JDK 11
         uses: actions/setup-java@v3
         with:
-          distribution: 'temurin'  # You can use other JDK distributions like 'zulu'.
-          java-version: '11'  # Specify the JDK version.
-
-      # - name: Cache Maven packages
-      #   uses: actions/cache@v3
-      #   with:
-      #     path: ~/.m2/repository
-      #     key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-      #     restore-keys: |
-      #       ${{ runner.os }}-maven-
+          distribution: 'temurin'
+          java-version: '11'
 
       - name: Build the code
         run: |
           mvn clean install -DskipTests
-          ls -rlt .
+          ls -l target/  # Check if the JAR file exists in the target directory
 
       - name: Configure AWS Credentials
         run: |
@@ -39,4 +31,4 @@ jobs:
 
       - name: Copy JAR to S3 bucket
         run: |
-          aws s3 cp target/docker-demo-0.0.1-SNAPSHOT.jar s3://anubhav-github-actionv3/demo-folder/
+          aws s3 cp ./target/docker-demo-0.0.1-SNAPSHOT.jar s3://anubhav-github-actionv3/demo-folder/
