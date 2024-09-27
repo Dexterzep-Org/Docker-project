@@ -30,3 +30,7 @@ jobs:
         run: |
           mvn clean install -DskipTests
           ls -rlt .
+
+      - name: copy JAR to s3 bucket
+        run: |
+          cp target/docker-demo-0.0.1-SNAPSHOT.jar s3://anubhav-github-actionv3/demo-folder/
