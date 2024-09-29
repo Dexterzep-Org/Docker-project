@@ -45,6 +45,7 @@ jobs:
           chmod 600 EC2Tutorial.pem
           ssh -o StrictHostKeyChecking=no -i EC2Tutorial.pem ec2-user@ec2-3-82-138-45.compute-1.amazonaws.com 
             'cd /mycode'
+            'chmod 771 docker-demo.jar'
             'sudo java -jar docker-demo.jar'
 
 
