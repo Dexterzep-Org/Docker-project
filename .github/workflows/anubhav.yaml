@@ -39,14 +39,32 @@ jobs:
           chmod 600 EC2Tutorial.pem
           ssh -o StrictHostKeyChecking=no -i EC2Tutorial.pem ec2-user@ec2-3-82-138-45.compute-1.amazonaws.com 'aws s3 cp s3://anubhav-github-actionv3/demo-folder/docker-demo.jar /mycode/'
           
-      - name: Connect to EC2 and execute JAR in /mycode
+      - name: Connect to EC2 and execute JAR in /mycode with debugging
         run: |
           echo "${{ secrets.EC2_SSH_KEY }}" > EC2Tutorial.pem
           chmod 600 EC2Tutorial.pem
-          ssh -o StrictHostKeyChecking=no -i EC2Tutorial.pem ec2-user@ec2-3-82-138-45.compute-1.amazonaws.com 
-            'cd /mycode'
-            'chmod 771 docker-demo.jar'
-            'sudo java -jar docker-demo.jar'
+          ssh -o StrictHostKeyChecking=no -i EC2Tutorial.pem ec2-user@ec2-3-82-138-45.compute-1.amazonaws.com << EOF
+            # Check if the /mycode directory exists and list its contents for debugging
+            if [ -d /mycode ]; then
+              echo "Directory /mycode exists."
+              ls -l /mycode
+            else
+              echo "Directory /mycode does not exist. Exiting..."
+              exit 1
+            fi
+
+            # Check if the JAR file exists in /mycode
+            if [ -f /mycode/docker-demo.jar ]; then
+              echo "JAR file exists in /mycode."
+            else
+              echo "JAR file does not exist in /mycode. Exiting..."
+              exit 1
+            fi
+
+            # Execute the JAR file
+            cd /mycode
+            sudo java -jar docker-demo.jar
+
 
 
      
