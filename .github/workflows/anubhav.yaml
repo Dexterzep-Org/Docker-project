@@ -39,7 +39,7 @@ jobs:
           chmod 600 EC2Tutorial.pem
           ssh -o StrictHostKeyChecking=no -i EC2Tutorial.pem ec2-user@ec2-3-82-138-45.compute-1.amazonaws.com 'aws s3 cp s3://anubhav-github-actionv3/demo-folder/docker-demo.jar /mycode/'
 
-      - name: Connect to EC2, set permissions, and execute JAR in /mycode
+      - name: Connect to EC2, start JAR in background, and verify it's running
         run: |
           echo "${{ secrets.EC2_SSH_KEY }}" > EC2Tutorial.pem
           chmod 600 EC2Tutorial.pem
@@ -63,7 +63,13 @@ jobs:
               exit 1
             fi
 
-            # Execute the JAR file
+            # Start the JAR file in the background using nohup and redirect output
             cd /mycode
-            sudo java -jar docker-demo.jar << EOF
+            nohup sudo java -jar docker-demo.jar > /mycode/docker-demo.log 2>&1 &
 
+            # Wait for a few seconds to ensure the app has time to start
+            sleep 10
+
+            # Check if the application is running by making a request to localhost:9090
+            curl -I http://localhost:9090
+EOF
