@@ -38,7 +38,7 @@ jobs:
           echo "${{ secrets.EC2_SSH_KEY }}" > EC2Tutorial.pem
           chmod 600 EC2Tutorial.pem
           ssh -o StrictHostKeyChecking=no -i EC2Tutorial.pem ec2-user@ec2-3-82-138-45.compute-1.amazonaws.com 'aws s3 cp s3://anubhav-github-actionv3/demo-folder/docker-demo.jar /mycode/'
-          
+
       - name: Connect to EC2, set permissions, and execute JAR in /mycode
         run: |
           echo "${{ secrets.EC2_SSH_KEY }}" > EC2Tutorial.pem
@@ -65,4 +65,5 @@ jobs:
 
             # Execute the JAR file
             cd /mycode
-            sudo java -jar docker-demo.jar
+            sudo java -jar docker-demo.jar << EOF
+
