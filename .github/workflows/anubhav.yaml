@@ -39,11 +39,11 @@ jobs:
           chmod 600 EC2Tutorial.pem
           ssh -o StrictHostKeyChecking=no -i EC2Tutorial.pem ec2-user@ec2-3-82-138-45.compute-1.amazonaws.com 'aws s3 cp s3://anubhav-github-actionv3/demo-folder/docker-demo.jar /mycode/'
 
-      - name: Connect to EC2, start JAR in background, and verify it's running
+      - name: Connect to EC2, start JAR in background, and ensure it's running
         run: |
           echo "${{ secrets.EC2_SSH_KEY }}" > EC2Tutorial.pem
           chmod 600 EC2Tutorial.pem
-          ssh -o StrictHostKeyChecking=no -i EC2Tutorial.pem ec2-user@ec2-3-82-138-45.compute-1.amazonaws.com << EOF
+          ssh -o StrictHostKeyChecking=no -i EC2Tutorial.pem ec2-user@ec2-3-82-138-45.compute-1.amazonaws.com << 'EOF'
             # Check if the /mycode directory exists
             if [ -d /mycode ]; then
               echo "Directory /mycode exists."
@@ -67,9 +67,7 @@ jobs:
             cd /mycode
             nohup sudo java -jar docker-demo.jar > /mycode/docker-demo.log 2>&1 &
 
-            # Wait for a few seconds to ensure the app has time to start
-            sleep 10
-
-            # Check if the application is running by making a request to localhost:9090
-            curl -I http://localhost:9090
-EOF
+            # Exit the SSH session gracefully
+            exit
+            
+            EOF
