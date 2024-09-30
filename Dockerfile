@@ -4,8 +4,8 @@ FROM openjdk:11-jre-slim
 # Set the working directory
 WORKDIR /app
 
-# Copy the JAR file into the image
-COPY docker-demo.jar /app/docker-demo.jar
+# Copy the JAR file from the target directory into the image
+COPY target/docker-demo.jar /app/docker-demo.jar
 
 # Expose the port the app runs on (optional, depending on your app)
 EXPOSE 8080
