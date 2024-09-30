@@ -1,13 +1,14 @@
-FROM alpine:latest
+# Use an OpenJDK base image
+FROM openjdk:11-jre-slim
 
-ENV DEPLOY_DIR='/deployments'
-RUN apk add openjdk11 \
-    && mkdir ${DEPLOY_DIR} \
-    && chmod -R 755 ${DEPLOY_DIR}
-COPY target/docker-demo.jar ${DEPLOY_DIR}/
+# Set the working directory
+WORKDIR /app
 
+# Copy the JAR file into the image
+COPY docker-demo.jar /app/docker-demo.jar
+
+# Expose the port the app runs on (optional, depending on your app)
 EXPOSE 8080
 
-USER 185
-
-ENTRYPOINT exec java -jar ${DEPLOY_DIR}/docker-demo.jar
+# Command to run the JAR file
+ENTRYPOINT ["java", "-jar", "/app/docker-demo.jar"]
