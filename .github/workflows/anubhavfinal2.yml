@@ -66,10 +66,12 @@ jobs:
           echo "${{ secrets.EC2_SSH_KEY }}" > EC2Tutorial.pem
           chmod 600 EC2Tutorial.pem
           ssh -o StrictHostKeyChecking=no -i EC2Tutorial.pem -t ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
+            echo "Image Tag: $IMAGE_TAG"
             aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin 615299762140.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
             docker pull $IMAGE_TAG
             docker stop ecrcon1 || true
             docker rm ecrcon1 || true
             docker run -d --name ecrcon1 -p 8080:8080 $IMAGE_TAG
+            docker ps -a  # List all containers to check if ecrcon1 is running
           EOF
 
