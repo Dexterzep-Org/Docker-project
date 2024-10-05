@@ -55,12 +55,12 @@ jobs:
       # Step 8: Tag the Docker image with a timestamp
       - name: Tag Docker image
         run: |
-          TIMESTAMP=$(date +%Y%m%d%H%M%S)
-          IMAGE_TAG="docker-demo-app:${TIMESTAMP}"
-          docker tag docker-demo-app:latest 615299762140.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${IMAGE_TAG}
+         TIMESTAMP=$(date +%Y%m%d%H%M%S)
+         IMAGE_TAG="615299762140.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/docker-demo-app:${TIMESTAMP}"
+         docker tag docker-demo-app:latest $IMAGE_TAG
 
-      # Step 9: Push the Docker image to AWS ECR
+    # Step 9: Push the Docker image to AWS ECR
       - name: Push Docker image to AWS ECR
         run: |
-          docker push 615299762140.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${IMAGE_TAG}
+         docker push $IMAGE_TAG
 
