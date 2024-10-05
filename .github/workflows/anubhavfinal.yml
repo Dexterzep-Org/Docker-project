@@ -52,15 +52,11 @@ jobs:
         run: |
           aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin 615299762140.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
 
-      # Step 8: Tag the Docker image with a timestamp
-      - name: Tag Docker image
+      # Step 8 and 9: Tag and Push Docker image to AWS ECR within the same step
+      - name: Tag and Push Docker image
         run: |
          TIMESTAMP=$(date +%Y%m%d%H%M%S)
          IMAGE_TAG="615299762140.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/docker-demo-app:${TIMESTAMP}"
          docker tag docker-demo-app:latest $IMAGE_TAG
-
-    # Step 9: Push the Docker image to AWS ECR
-      - name: Push Docker image to AWS ECR
-        run: |
-         docker push $IMAGE_TAG .
+         docker push $IMAGE_TAG
 
