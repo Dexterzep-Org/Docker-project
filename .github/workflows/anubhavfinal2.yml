@@ -1,9 +1,9 @@
 name: my_pipeline
 
-on: 
+on:
   push:
-    branches: 
-      - DEV 
+    branches:
+      - DEV
 
 jobs:
   My_First_Job:
@@ -52,18 +52,18 @@ jobs:
         run: |
           aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin 615299762140.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
 
-      # Step 8 and 9: Tag and Push Docker image to AWS ECR
+      # Step 8: Tag and Push Docker image to AWS ECR
       - name: Tag and Push Docker image
         run: |
-         TIMESTAMP=$(date +%Y%m%d%H%M%S)
-         IMAGE_TAG="615299762140.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/docker-demo-app:${TIMESTAMP}"
-         docker tag docker-demo-app:latest $IMAGE_TAG
-         docker push $IMAGE_TAG
+          TIMESTAMP=$(date +%Y%m%d%H%M%S)
+          IMAGE_TAG="615299762140.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/docker-demo-app:${TIMESTAMP}"
+          docker tag docker-demo-app:latest $IMAGE_TAG
+          docker push $IMAGE_TAG
 
-      # Step 10: SSH into EC2 and deploy the Docker container
+      # Step 9: SSH into EC2 and deploy container
       - name: SSH into EC2 and deploy container
         run: |
-          echo "${{ secrets.EC2_PRIVATE_KEY }}" > EC2Tutorial.pem
+          echo "${{ secrets.EC2_SSH_KEY }}" > EC2Tutorial.pem
           chmod 600 EC2Tutorial.pem
           ssh -o StrictHostKeyChecking=no -i EC2Tutorial.pem -t ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
             aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin 615299762140.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
