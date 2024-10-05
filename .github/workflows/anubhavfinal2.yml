@@ -24,7 +24,7 @@ jobs:
       - name: Build the code
         run: |
           mvn clean install -DskipTests
-          ls -l target/  # Check if the JAR file exists in the target directory
+          ls -l target/
 
       # Step 4: Verify JAR file exists
       - name: Verify JAR file is built
@@ -52,7 +52,7 @@ jobs:
         run: |
           aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin 615299762140.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
 
-      # Step 8 and 9: Tag and Push Docker image to AWS ECR within the same step
+      # Step 8 and 9: Tag and Push Docker image to AWS ECR
       - name: Tag and Push Docker image
         run: |
          TIMESTAMP=$(date +%Y%m%d%H%M%S)
@@ -60,12 +60,12 @@ jobs:
          docker tag docker-demo-app:latest $IMAGE_TAG
          docker push $IMAGE_TAG
 
-      # Step 10: SSH into EC2 and deploy the Docker image
+      # Step 10: SSH into EC2 and deploy the Docker image with pseudo-terminal allocation (-t)
       - name: SSH into EC2 and deploy container
         run: |
           echo "${{ secrets.EC2_PRIVATE_KEY }}" > ec2_key.pem
           chmod 600 ec2_key.pem
-          ssh -o StrictHostKeyChecking=no -i ec2_key.pem ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
+          ssh -o StrictHostKeyChecking=no -i ec2_key.pem -t ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
             aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin 615299762140.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
             docker pull $IMAGE_TAG
             docker stop ecrcon1 || true
