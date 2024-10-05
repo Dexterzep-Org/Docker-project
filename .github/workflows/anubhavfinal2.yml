@@ -3,7 +3,7 @@ name: my_pipeline
 on: 
   push:
     branches: 
-      - DEV
+      - DEV 
 
 jobs:
   My_First_Job:
@@ -12,7 +12,7 @@ jobs:
       # Step 1: Checkout the code
       - name: Checkout code
         uses: actions/checkout@v3
-
+      
       # Step 2: Set up JDK 11
       - name: Set up JDK 11
         uses: actions/setup-java@v3
@@ -24,7 +24,7 @@ jobs:
       - name: Build the code
         run: |
           mvn clean install -DskipTests
-          ls -l target/
+          ls -l target/  # Check if the JAR file exists in the target directory
 
       # Step 4: Verify JAR file exists
       - name: Verify JAR file is built
@@ -60,15 +60,16 @@ jobs:
          docker tag docker-demo-app:latest $IMAGE_TAG
          docker push $IMAGE_TAG
 
-      # Step 10: SSH into EC2 and deploy the Docker image with pseudo-terminal allocation (-t)
+      # Step 10: SSH into EC2 and deploy the Docker container
       - name: SSH into EC2 and deploy container
         run: |
-          echo "${{ secrets.EC2_PRIVATE_KEY }}" > ec2_key.pem
-          chmod 600 ec2_key.pem
-          ssh -o StrictHostKeyChecking=no -i ec2_key.pem -t ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
+          echo "${{ secrets.EC2_PRIVATE_KEY }}" > EC2Tutorial.pem
+          chmod 600 EC2Tutorial.pem
+          ssh -o StrictHostKeyChecking=no -i EC2Tutorial.pem -t ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
             aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin 615299762140.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
             docker pull $IMAGE_TAG
             docker stop ecrcon1 || true
             docker rm ecrcon1 || true
             docker run -d --name ecrcon1 -p 8080:8080 $IMAGE_TAG
           EOF
+
