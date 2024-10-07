@@ -93,4 +93,5 @@ jobs:
             --cluster cicdcluster1 \
             --service cicd-service1 \
             --task-definition Demo_Task_Defination1-ci-cd \
+            --desired-count 2 \
             --force-new-deployment
