@@ -30,6 +30,11 @@ jobs:
 
       - name: Build Docker image
         run: |
+          echo "FROM openjdk:11-jre-slim" > Dockerfile
+          echo "WORKDIR /app" >> Dockerfile
+          echo "COPY target/docker-demo.jar /app/docker-demo.jar" >> Dockerfile
+          echo "EXPOSE 8080" >> Dockerfile
+          echo 'ENTRYPOINT ["java", "-jar", "/app/docker-demo.jar"]' >> Dockerfile
           docker build -t docker-demo-app:latest .
       
       - name: Login to AWS ECR
@@ -54,7 +59,7 @@ jobs:
             "networkMode": "awsvpc",
             "containerDefinitions": [
               {
-                "name": "docker-demo-app",
+                "name": "CICD_Con1",
                 "image": "${{ env.IMAGE_TAG }}",
                 "cpu": 256,
                 "memory": 512,
