@@ -48,7 +48,7 @@ jobs:
           IMAGE_TAG="615299762140.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/docker-demo-app:${TIMESTAMP}"
           docker tag docker-demo-app:latest $IMAGE_TAG
           docker push $IMAGE_TAG
-          # Set the IMAGE_TAG as an output variable to be reused in later steps
+          # Set the IMAGE_TAG as an environment variable to be reused in later steps
           echo "IMAGE_TAG=${IMAGE_TAG}" >> $GITHUB_ENV
 
       - name: Register ECS Task Definition
@@ -91,6 +91,6 @@ jobs:
         run: |
           aws ecs update-service \
             --cluster cicdcluster1 \
-            --service my-ecs-service \
+            --service cicd-service1 \
             --task-definition Demo_Task_Defination1-ci-cd \
             --force-new-deployment
