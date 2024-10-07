@@ -1,9 +1,9 @@
 name: my_pipeline
 
-on:
+on: 
   push:
-    branches:
-      - DEV
+    branches: 
+      - DEV 
 
 jobs:
   My_First_Job:
@@ -19,13 +19,8 @@ jobs:
           java-version: '11'
 
       - name: Build the code
-        run: |
-          mvn clean install -DskipTests
-          ls -l target/  # Check if the JAR file exists in the target directory
-
-      - name: Verify JAR file is built
-        run: ls -l target/
-
+        run: mvn clean install -DskipTests
+      
       - name: Configure AWS Credentials
         run: |
           aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -40,7 +35,7 @@ jobs:
           echo "EXPOSE 8080" >> Dockerfile
           echo 'ENTRYPOINT ["java", "-jar", "/app/docker-demo.jar"]' >> Dockerfile
           docker build -t docker-demo-app:latest .
-
+          
       - name: Login to AWS ECR
         run: |
           aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin 615299762140.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
@@ -52,18 +47,46 @@ jobs:
           docker tag docker-demo-app:latest $IMAGE_TAG
           docker push $IMAGE_TAG
 
-      - name: SSH into EC2 and deploy container
+      - name: Register ECS Task Definition
         run: |
-          echo "${{ secrets.EC2_SSH_KEY }}" > EC2Tutorial.pem
-          chmod 600 EC2Tutorial.pem
-          ssh -o StrictHostKeyChecking=no -i EC2Tutorial.pem -t ec2-user@${{ secrets.EC2_HOST }} << 'EOF'
-            echo "Image Tag: $IMAGE_TAG"
-            aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin 615299762140.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
-            docker pull $IMAGE_TAG
-            docker stop ecrcon1 || true
-            docker rm ecrcon1 || true
-            docker run -d --name ecrcon1 -p 8080:8080 $IMAGE_TAG
-            sleep 10  # Allow some time for container to start
-            docker logs ecrcon1  # Check container logs
-            docker ps -a  # List all containers to check status
+          TASK_DEFINITION=$(cat <<EOF
+          {
+            "family": "docker-demo-app",
+            "networkMode": "awsvpc",
+            "containerDefinitions": [
+              {
+                "name": "docker-demo-app",
+                "image": "$IMAGE_TAG",
+                "memory": 512,
+                "cpu": 256,
+                "essential": true,
+                "portMappings": [
+                  {
+                    "containerPort": 8080,
+                    "protocol": "tcp"
+                  }
+                ]
+              }
+            ],
+            "requiresCompatibilities": [
+              "FARGATE"
+            ],
+            "cpu": "256",
+            "memory": "512",
+            "executionRoleArn": "arn:aws:iam::615299762140:role/ecsTaskExecutionRole",
+            "taskRoleArn": "arn:aws:iam::615299762140:role/ecsTaskExecutionRole"
+          }
           EOF
+          )
+          echo "$TASK_DEFINITION" > taskdef.json
+          aws ecs register-task-definition \
+            --family docker-demo-app \
+            --cli-input-json file://taskdef.json
+
+      - name: Update ECS Service
+        run: |
+          aws ecs update-service \
+            --cluster my-cluster \
+            --service my-ecs-service \
+            --task-definition docker-demo-app \
+            --force-new-deployment
