@@ -8,7 +8,7 @@ public class DemoController {
 
 	@GetMapping(value = "")
 	public String helloWorld() {
-		String s = "Here we go.. One more time!!";
+		String s = "hello leo, alsi kutte!!";
 		return s;
 	}
 }
