@@ -3,7 +3,7 @@ name: ECS CI/CD Pipeline
 on:
   push:
     branches:
-      - DEV  # Trigger the pipeline on push to the main branch
+      - main  # Trigger the pipeline on push to the main branch
 
 env:
   AWS_REGION: us-east-1
@@ -33,7 +33,8 @@ jobs:
       uses: actions/setup-java@v3
       with:
         java-version: '11'
-        distribution: 'adoptopenjdk'
+        distribution: 'temurin'  # Use Adoptium distribution (temurin)
+        java-package: jdk
     
     - name: Build with Maven
       run: |
