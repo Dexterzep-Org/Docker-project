@@ -3,7 +3,7 @@ name: ECS CI/CD Pipeline
 on:
   push:
     branches:
-      - main  # Trigger the pipeline on push to the main branch
+      - Dev  # Trigger the pipeline on push to the main branch
 
 env:
   AWS_REGION: us-east-1
